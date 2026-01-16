@@ -1,0 +1,259 @@
+{% comment %}
+  Shopify Section: Mobile Fixed Bottom Navigation
+  This section creates a fixed navigation bar at the bottom of the screen,
+  primarily intended for mobile devices. It includes customizable links
+  with icons and text.
+{% endcomment %}
+
+<style>
+  /* Base styles for the navigation bar */
+  .mobile-bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    background-color: #fff; /* Customizable background color */
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 10px 0;
+    z-index: 1000; /* Ensure it stays on top of other content */
+    border-top-left-radius: 15px; /* Rounded corners as in the image */
+    border-top-right-radius: 15px;
+    overflow: hidden; /* Ensures rounded corners are respected */
+  }
+
+  /* Hide on larger screens (desktop) */
+  @media only screen and (min-width: 768px) {
+    .mobile-bottom-nav {
+      display: none;
+    }
+  }
+
+  .mobile-bottom-nav__item {
+    flex: 1;
+    text-align: center;
+    text-decoration: none;
+    color: var(--color-text, #333); /* Customizable text color */
+    font-family: 'Inter', sans-serif; /* Using Inter font */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 8px 0;
+    transition: color 0.3s ease;
+    border-radius: 8px; /* Rounded corners for individual items */
+  }
+
+  .mobile-bottom-nav__icon svg {
+    width: 24px;
+    height: 24px;
+    fill: currentColor; /* Inherit color from parent */
+    margin-bottom: 4px;
+  }
+
+  .mobile-bottom-nav__text {
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  /* Custom properties for theme editor colors */
+  :root {
+    --color-background: {{ section.settings.background_color.rgb }};
+    --color-text: {{ section.settings.text_color.rgb }};
+    --color-primary: {{ section.settings.active_color.rgb }};
+  }
+</style>
+{% unless request.path contains 'products' %}
+  <nav class="mobile-bottom-nav" role="navigation" aria-label="Mobile Bottom Navigation">
+    {% for block in section.blocks %}
+      {% if block.type == 'nav_item' %}
+        {%- liquid
+          assign is_active = false
+          if request.path == block.settings.link
+            assign is_active = true
+          endif
+        -%}
+        <a href="{{ block.settings.link }}" class="mobile-bottom-nav__item" aria-label="{{ block.settings.text }}">
+          <div class="mobile-bottom-nav__icon">
+            {% case block.settings.icon %}
+              {% when 'home' %}
+                {% comment %} Home Icon (House) {% endcomment %}
+                {% if is_active %}
+                  <svg xmlns="http://www.w3.org/2000/svg" width="25" height="24" viewBox="0 0 25 24" fill="none">
+                    <rect width="24" height="24" transform="translate(0.0999985)" fill="white"/>
+                    <path d="M9.12 2.83998L3.73 7.03998C2.83 7.73998 2.1 9.22998 2.1 10.36V17.77C2.1 20.09 3.99 21.99 6.31 21.99H17.89C20.21 21.99 22.1 20.09 22.1 17.78V10.5C22.1 9.28998 21.29 7.73998 20.3 7.04998L14.12 2.71998C12.72 1.73998 10.47 1.78998 9.12 2.83998Z" fill="black" stroke="#E7E7E7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M12.1 17.99V14.99" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                {% else %}
+                  <svg xmlns="http://www.w3.org/2000/svg" width="25" height="24" viewBox="0 0 25 24" fill="none">
+                    <mask id="mask0_151_1343" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="25" height="24">
+                    <rect x="0.100098" width="24" height="24" fill="#D9D9D9"/>
+                    </mask>
+                    <g mask="url(#mask0_151_1343)">
+                    <path d="M6.1001 19H9.44635V13.0577H14.7538V19H18.1001V9.99999L12.1001 5.48074L6.1001 9.99999V19ZM4.6001 20.5V9.24999L12.1001 3.60574L19.6001 9.24999V20.5H13.2538V14.5577H10.9463V20.5H4.6001Z" fill="#1C1B1F"/>
+                    </g>
+                  </svg>
+                {% endif %}
+              {% when 'new' %}
+                {% if is_active %}
+                  <svg xmlns="http://www.w3.org/2000/svg" width="21" height="20" viewBox="0 0 21 20" fill="none">
+                    <path d="M4.4328 19.5L5.9808 12.85L0.800049 8.36551L7.6348 7.77876L10.3 1.50001L12.975 7.77876L19.8095 8.36551L14.6288 12.85L16.177 19.5L10.3 15.9673L4.4328 19.5ZM15.6365 6.02876L16.123 3.97701L14.4828 2.60776L16.65 2.42701L17.4828 0.490509L18.3153 2.42701L20.4828 2.60776L18.8423 3.97701L19.3288 6.02876L17.4828 4.94051L15.6365 6.02876Z" fill="#1C1B1F"/>
+                  </svg>
+                {% else %}
+                  <svg xmlns="http://www.w3.org/2000/svg" width="25" height="24" viewBox="0 0 25 24" fill="none">
+                    <mask id="mask0_2_702" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="25" height="24">
+                    <rect x="0.299995" width="24" height="24" fill="#D9D9D9"/>
+                    </mask>
+                    <g mask="url(#mask0_2_702)">
+                    <path d="M8.70775 17.354L12.3 15.1942L15.902 17.3885L14.9615 13.298L18.1212 10.5712L13.9615 10.198L12.3 6.33648L10.648 10.173L6.4885 10.5365L9.648 13.298L8.70775 17.354ZM6.43275 20.5L7.98075 13.85L2.8 9.36548L9.63475 8.77873L12.3 2.49998L14.975 8.77873L21.8095 9.36548L16.6287 13.85L18.177 20.5L12.3 16.9672L6.43275 20.5ZM17.6365 7.02873L18.123 4.97698L16.4827 3.60773L18.65 3.42698L19.4827 1.49048L20.3152 3.42698L22.4827 3.60773L20.8422 4.97698L21.3287 7.02873L19.4827 5.94048L17.6365 7.02873Z" fill="#484C52"/>
+                    </g>
+                  </svg>
+                {% endif %}
+
+              {% when 'sale' %}
+                {% if is_active %}
+                  <svg xmlns="http://www.w3.org/2000/svg" width="19" height="20" viewBox="0 0 19 20" fill="none">
+                    <path d="M18.4578 12.202L11.702 18.9578C11.5203 19.1384 11.3159 19.274 11.0887 19.3645C10.8616 19.4548 10.6351 19.5 10.4093 19.5C10.1833 19.5 9.95725 19.4548 9.73125 19.3645C9.50525 19.274 9.30192 19.1384 9.12125 18.9578L0.527 10.373C0.3565 10.209 0.226 10.0165 0.1355 9.7955C0.0451666 9.5745 0 9.342 0 9.098V2.31725C0 1.81758 0.176583 1.38975 0.52975 1.03375C0.883083 0.677916 1.31225 0.5 1.81725 0.5H8.598C8.8395 0.5 9.07342 0.549 9.29975 0.647C9.52625 0.744833 9.7225 0.876583 9.8885 1.04225L18.4578 9.627C18.6409 9.80867 18.7745 10.013 18.8585 10.24C18.9425 10.4672 18.9845 10.6949 18.9845 10.9233C18.9845 11.1516 18.9425 11.3761 18.8585 11.5968C18.7745 11.8176 18.6409 12.0193 18.4578 12.202ZM4.025 5.77875C4.37367 5.77875 4.66983 5.65725 4.9135 5.41425C5.157 5.17125 5.27875 4.87608 5.27875 4.52875C5.27875 4.17892 5.15725 3.88158 4.91425 3.63675C4.67125 3.39175 4.37608 3.26925 4.02875 3.26925C3.67892 3.26925 3.38158 3.39133 3.13675 3.6355C2.89175 3.87967 2.76925 4.17617 2.76925 4.525C2.76925 4.87367 2.89133 5.16983 3.1355 5.4135C3.37967 5.657 3.67617 5.77875 4.025 5.77875ZM10.5 15.2115L13.7693 11.8845C13.9333 11.7205 14.0614 11.5279 14.1538 11.3068C14.2461 11.0856 14.2923 10.8462 14.2923 10.5885C14.2923 10.0923 14.1167 9.66508 13.7655 9.30675C13.4143 8.94842 12.9899 8.76925 12.4923 8.76925C12.1713 8.76925 11.8545 8.85775 11.542 9.03475C11.2293 9.21158 10.882 9.51667 10.5 9.95C10.077 9.49617 9.7175 9.18592 9.4215 9.01925C9.12567 8.85258 8.82108 8.76925 8.50775 8.76925C8.01008 8.76925 7.58567 8.94842 7.2345 9.30675C6.88333 9.66508 6.70775 10.0923 6.70775 10.5885C6.70775 10.8462 6.75392 11.0856 6.84625 11.3068C6.93858 11.5279 7.06675 11.7205 7.23075 11.8845L10.5 15.2115Z" fill="#1C1B1F"/>
+                  </svg>
+                {% else %}
+                  {% comment %} Price Tag Icon (Sale) {% endcomment %}
+                  <svg xmlns="http://www.w3.org/2000/svg" width="19" height="20" viewBox="0 0 19 20" fill="none">
+                    <path d="M10.5 15.2115L13.7693 11.8845C13.9333 11.7205 14.0614 11.5279 14.1538 11.3068C14.2461 11.0856 14.2923 10.8462 14.2923 10.5885C14.2923 10.0923 14.1167 9.66508 13.7655 9.30675C13.4143 8.94842 12.9899 8.76925 12.4923 8.76925C12.1713 8.76925 11.8545 8.85775 11.542 9.03475C11.2293 9.21158 10.882 9.51667 10.5 9.95C10.077 9.49617 9.7175 9.18592 9.4215 9.01925C9.12567 8.85258 8.82108 8.76925 8.50775 8.76925C8.01008 8.76925 7.58567 8.94842 7.2345 9.30675C6.88333 9.66508 6.70775 10.0923 6.70775 10.5885C6.70775 10.8462 6.75392 11.0856 6.84625 11.3068C6.93858 11.5279 7.06675 11.7205 7.23075 11.8845L10.5 15.2115ZM18.4578 12.202L11.702 18.9578C11.5203 19.1384 11.3159 19.274 11.0887 19.3645C10.8616 19.4548 10.6351 19.5 10.4093 19.5C10.1833 19.5 9.95725 19.4548 9.73125 19.3645C9.50525 19.274 9.30192 19.1384 9.12125 18.9578L0.527 10.373C0.3565 10.209 0.226 10.0165 0.1355 9.7955C0.0451666 9.5745 0 9.342 0 9.098V2.31725C0 1.81758 0.176583 1.38975 0.52975 1.03375C0.883083 0.677916 1.31225 0.5 1.81725 0.5H8.598C8.8395 0.5 9.07342 0.549 9.29975 0.647C9.52625 0.744833 9.7225 0.876583 9.8885 1.04225L18.4578 9.627C18.6409 9.80867 18.7745 10.013 18.8585 10.24C18.9425 10.4672 18.9845 10.6949 18.9845 10.9233C18.9845 11.1516 18.9425 11.3761 18.8585 11.5968C18.7745 11.8176 18.6409 12.0193 18.4578 12.202ZM10.6328 17.9038L17.3885 11.148C17.4525 11.084 17.4845 11.0087 17.4845 10.922C17.4845 10.8355 17.4525 10.7603 17.3885 10.6962L8.70775 2.0095H1.81725C1.72758 2.0095 1.65225 2.03842 1.59125 2.09625C1.53042 2.15392 1.5 2.22758 1.5 2.31725V9.08275C1.5 9.12125 1.50642 9.15967 1.51925 9.198C1.53208 9.2365 1.5545 9.27175 1.5865 9.30375L10.1808 17.9038C10.2449 17.9679 10.3203 18 10.4068 18C10.4933 18 10.5686 17.9679 10.6328 17.9038ZM4.025 5.77875C4.37367 5.77875 4.66983 5.65725 4.9135 5.41425C5.157 5.17125 5.27875 4.87608 5.27875 4.52875C5.27875 4.17892 5.15725 3.88158 4.91425 3.63675C4.67125 3.39175 4.37608 3.26925 4.02875 3.26925C3.67892 3.26925 3.38158 3.39133 3.13675 3.6355C2.89175 3.87967 2.76925 4.17617 2.76925 4.525C2.76925 4.87367 2.89133 5.16983 3.1355 5.4135C3.37967 5.657 3.67617 5.77875 4.025 5.77875Z" fill="#484C52"/>
+                  </svg>
+                {% endif %}
+
+              {% when 'category' %}
+                {% if is_active %}
+                  <svg xmlns="http://www.w3.org/2000/svg" width="21" height="18" viewBox="0 0 21 18" fill="none">
+                    <path d="M5.2003 7.1135L3.80605 7.8845C3.59205 8.005 3.37088 8.03675 3.14255 7.97975C2.91438 7.92275 2.74005 7.78717 2.61955 7.573L1.0043 4.74625C0.883798 4.53208 0.852048 4.30933 0.909048 4.078C0.966048 3.8465 1.10163 3.6705 1.3158 3.55L6.5658 0.5H8.04655C8.21571 0.5 8.35097 0.550667 8.4523 0.652C8.55346 0.753334 8.60405 0.888583 8.60405 1.05775V1.404C8.60405 1.97317 8.81113 2.46483 9.2253 2.879C9.63947 3.293 10.1311 3.5 10.7003 3.5C11.2695 3.5 11.7611 3.293 12.1753 2.879C12.5895 2.46483 12.7965 1.97317 12.7965 1.404V1.05775C12.7965 0.888583 12.8471 0.753334 12.9483 0.652C13.0496 0.550667 13.1849 0.5 13.354 0.5H14.8348L20.0848 3.55C20.299 3.6705 20.4345 3.8465 20.4915 4.078C20.5485 4.30933 20.5168 4.53208 20.3963 4.74625L18.781 7.573C18.6605 7.78717 18.4887 7.92017 18.2655 7.972C18.0425 8.024 17.8189 7.98975 17.5945 7.86925L16.2003 7.12875V16.6152C16.2003 16.8666 16.1156 17.0768 15.9463 17.246C15.7771 17.4153 15.5669 17.5 15.3155 17.5H6.08505C5.83372 17.5 5.62347 17.4153 5.4543 17.246C5.28497 17.0768 5.2003 16.8666 5.2003 16.6152V7.1135Z" fill="#1C1B1F"/>
+                  </svg>
+                {% else %}
+                  {% comment %} T-Shirt Icon (Category/Products) {% endcomment %}
+                  <svg xmlns="http://www.w3.org/2000/svg" width="21" height="18" viewBox="0 0 21 18" fill="none">
+                    <path d="M5.19998 7.1135L3.80573 7.8845C3.59173 8.005 3.37056 8.03675 3.14223 7.97975C2.91406 7.92275 2.73973 7.78717 2.61923 7.573L1.00398 4.74625C0.883478 4.53208 0.851728 4.30933 0.908728 4.078C0.965728 3.8465 1.10131 3.6705 1.31548 3.55L6.56548 0.5H8.04623C8.21539 0.5 8.35064 0.550667 8.45198 0.652C8.55314 0.753334 8.60373 0.888583 8.60373 1.05775V1.404C8.60373 1.97317 8.81081 2.46483 9.22498 2.879C9.63914 3.293 10.1308 3.5 10.7 3.5C11.2691 3.5 11.7608 3.293 12.175 2.879C12.5891 2.46483 12.7962 1.97317 12.7962 1.404V1.05775C12.7962 0.888583 12.8468 0.753334 12.948 0.652C13.0493 0.550667 13.1846 0.5 13.3537 0.5H14.8345L20.0845 3.55C20.2986 3.6705 20.4342 3.8465 20.4912 4.078C20.5482 4.30933 20.5165 4.53208 20.396 4.74625L18.7807 7.573C18.6602 7.78717 18.4884 7.92017 18.2652 7.972C18.0422 8.024 17.8186 7.98975 17.5942 7.86925L16.2 7.12875V16.6152C16.2 16.8666 16.1153 17.0768 15.946 17.246C15.7768 17.4153 15.5666 17.5 15.3152 17.5H6.08473C5.8334 17.5 5.62314 17.4153 5.45398 17.246C5.28464 17.0768 5.19998 16.8666 5.19998 16.6152V7.1135ZM6.69998 4.6V16H14.7V4.6L17.7807 6.2905L18.8115 4.55L14.5212 2.03075H14.2037C14.0499 2.87442 13.6512 3.58017 13.0077 4.148C12.3641 4.716 11.5948 5 10.7 5C9.80514 5 9.03589 4.716 8.39223 4.148C7.74873 3.58017 7.35006 2.87442 7.19623 2.03075H6.87873L2.58848 4.55L3.61923 6.2905L6.69998 4.6Z" fill="#484C52"/>
+                  </svg>
+                {% endif %}
+              {% when 'profile' %}
+                {% if is_active %}
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path d="M7.90015 7.69226C6.93765 7.69226 6.11373 7.34959 5.4284 6.66426C4.7429 5.97876 4.40015 5.15476 4.40015 4.19226C4.40015 3.22976 4.7429 2.40584 5.4284 1.72051C6.11373 1.03501 6.93765 0.692261 7.90015 0.692261C8.86265 0.692261 9.68656 1.03501 10.3719 1.72051C11.0574 2.40584 11.4001 3.22976 11.4001 4.19226C11.4001 5.15476 11.0574 5.97876 10.3719 6.66426C9.68656 7.34959 8.86265 7.69226 7.90015 7.69226ZM0.400146 15.3078V13.0845C0.400146 12.5948 0.533147 12.1413 0.799147 11.724C1.06515 11.3067 1.42065 10.9858 1.86565 10.7615C2.85398 10.277 3.85106 9.91359 4.8569 9.67126C5.86273 9.42893 6.87715 9.30776 7.90015 9.30776C8.92315 9.30776 9.93756 9.42893 10.9434 9.67126C11.9492 9.91359 12.9463 10.277 13.9346 10.7615C14.3796 10.9858 14.7351 11.3067 15.0011 11.724C15.2671 12.1413 15.4001 12.5948 15.4001 13.0845V15.3078H0.400146Z" fill="#1C1B1F"/>
+                  </svg>
+                {% else %}
+                  {% comment %} Profile Icon (User) {% endcomment %}
+                  <svg width="64px" height="64px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g clip-path="url(#clip0_15_82)"> <rect width="24" height="24" fill="white"></rect> <g filter="url(#filter0_d_15_82)"> <path d="M14.3365 12.3466L14.0765 11.9195C13.9082 12.022 13.8158 12.2137 13.8405 12.4092C13.8651 12.6046 14.0022 12.7674 14.1907 12.8249L14.3365 12.3466ZM9.6634 12.3466L9.80923 12.8249C9.99769 12.7674 10.1348 12.6046 10.1595 12.4092C10.1841 12.2137 10.0917 12.022 9.92339 11.9195L9.6634 12.3466ZM4.06161 19.002L3.56544 18.9402L4.06161 19.002ZM19.9383 19.002L20.4345 18.9402L19.9383 19.002ZM16 8.5C16 9.94799 15.2309 11.2168 14.0765 11.9195L14.5965 12.7737C16.0365 11.8971 17 10.3113 17 8.5H16ZM12 4.5C14.2091 4.5 16 6.29086 16 8.5H17C17 5.73858 14.7614 3.5 12 3.5V4.5ZM7.99996 8.5C7.99996 6.29086 9.79082 4.5 12 4.5V3.5C9.23854 3.5 6.99996 5.73858 6.99996 8.5H7.99996ZM9.92339 11.9195C8.76904 11.2168 7.99996 9.948 7.99996 8.5H6.99996C6.99996 10.3113 7.96342 11.8971 9.40342 12.7737L9.92339 11.9195ZM9.51758 11.8683C6.36083 12.8309 3.98356 15.5804 3.56544 18.9402L4.55778 19.0637C4.92638 16.1018 7.02381 13.6742 9.80923 12.8249L9.51758 11.8683ZM3.56544 18.9402C3.45493 19.8282 4.19055 20.5 4.99996 20.5V19.5C4.70481 19.5 4.53188 19.2719 4.55778 19.0637L3.56544 18.9402ZM4.99996 20.5H19V19.5H4.99996V20.5ZM19 20.5C19.8094 20.5 20.545 19.8282 20.4345 18.9402L19.4421 19.0637C19.468 19.2719 19.2951 19.5 19 19.5V20.5ZM20.4345 18.9402C20.0164 15.5804 17.6391 12.8309 14.4823 11.8683L14.1907 12.8249C16.9761 13.6742 19.0735 16.1018 19.4421 19.0637L20.4345 18.9402Z" fill="#000000"></path> </g> </g> <defs> <filter id="filter0_d_15_82" x="2.55444" y="3.5" width="18.8911" height="19" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB"> <feFlood flood-opacity="0" result="BackgroundImageFix"></feFlood> <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"></feColorMatrix> <feOffset dy="1"></feOffset> <feGaussianBlur stdDeviation="0.5"></feGaussianBlur> <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.1 0"></feColorMatrix> <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_15_82"></feBlend> <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_15_82" result="shape"></feBlend> </filter> <clipPath id="clip0_15_82"> <rect width="24" height="24" fill="white"></rect> </clipPath> </defs> </g>
+                  </svg>
+                {% endif %}
+              {% else %}
+                {% comment %} Default placeholder icon if none matched {% endcomment %}
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                  <path d="M0 0h24v24H0z" fill="none"/><path d="M12 2L2 12h3v8h6v-6h2v6h6v-8h3L12 2zm0 2.309L18.882 9H5.118L12 4.309zM7 18v-6h10v6H7z"/>
+                </svg>
+            {% endcase %}
+          </div>
+          <span class="mobile-bottom-nav__text">{{ block.settings.text }}</span>
+        </a>
+      {% endif %}
+    {% endfor %}
+  </nav>
+{% endunless %}
+{% schema %}
+{
+  "name": "Mobile Bottom Nav",
+  "tag": "section",
+  "class": "shopify-section-mobile-bottom-nav",
+  "max_blocks": 5,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Important Note"
+    },
+    {
+      "type": "paragraph",
+      "content": "This navigation bar is designed to be fixed at the bottom of the screen and is hidden on desktop devices (screens wider than 768px). To make it appear, view your store on a mobile device or resize your browser window."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "nav_item",
+      "name": "Navigation Item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Link Text",
+          "default": "Home"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link URL",
+          "default": "/"
+        },
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Select Icon",
+          "options": [
+            { "value": "home", "label": "Home" },
+            { "value": "new", "label": "New" },
+            { "value": "sale", "label": "Sale" },
+            { "value": "category", "label": "Category" },
+            { "value": "profile", "label": "Profile" }
+          ],
+          "default": "home"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Mobile Bottom Nav",
+      "blocks": [
+        {
+          "type": "nav_item",
+          "settings": {
+            "text": "Home",
+            "link": "/",
+            "icon": "home"
+          }
+        },
+        {
+          "type": "nav_item",
+          "settings": {
+            "text": "New",
+            "link": "/collections/new-arrivals",
+            "icon": "new"
+          }
+        },
+        {
+          "type": "nav_item",
+          "settings": {
+            "text": "Sale",
+            "link": "/collections/sale",
+            "icon": "sale"
+          }
+        },
+        {
+          "type": "nav_item",
+          "settings": {
+            "text": "Category",
+            "link": "/collections/all",
+            "icon": "category"
+          }
+        },
+        {
+          "type": "nav_item",
+          "settings": {
+            "text": "Profile",
+            "link": "/account",
+            "icon": "profile"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

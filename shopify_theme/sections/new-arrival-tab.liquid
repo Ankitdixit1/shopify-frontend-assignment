@@ -1,0 +1,385 @@
+<style>
+  /* Basic styling for the section */
+  .new-arrival-section {
+    padding: 1rem 1rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    font-family: Tenor Sans, sans-serif;
+  }
+
+  .section-title {
+    font-size: 18px; /* 36px */
+    font-weight: 800; /* Extra bold */
+    color: #1a202c; /* Gray-900 */
+    text-align: center;
+    margin-bottom: 0.6rem; /* 40px */
+    position: relative;
+    text-transform: uppercase;
+  }
+
+  .section-title::after {
+    content: '';
+    height: 25px;
+    width: 100%;
+    object-fit: cover;
+    display: block;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-image: url(https://cdn.shopify.com/s/files/1/0756/7681/1495/files/3.svg?v=1754534597);
+
+}
+  
+
+  nav.tab-navigation {
+    display: flex;
+    flex-wrap: nowrap; /* Allow wrapping on small screens */
+    margin-bottom: 2.1rem; /* 40px */
+    overflow-x: auto; /* Enable horizontal scrolling for small screens */
+    overflow: scroll;
+    scrollbar-width: none;
+  }
+  .tab-button {
+    padding: 0 0.9rem; /* 12px 16px */
+    font-size: 14px; /* 18px */
+    font-weight: 500; /* Medium */
+    border-radius: 9999px; /* Full rounded */
+    transition: all 0.3s ease-in-out;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    color:#888888;
+    white-space: nowrap; /* Prevent text wrapping */
+    position: relative;
+    font-family: Tenor Sans, sans-serif;
+  }
+
+  .tab-button.active {
+    color: #212806; /* Red-600 */
+    /* Removed border-bottom for active state to use pseudo-element for dot */
+    transform: translateY(-2px); /* Slightly move text up */
+    padding-bottom: 0.7rem;
+  }
+
+  /* Active tab red dot */
+  .tab-button.active::after {
+    content: '';
+    display: block;
+    width: 6px;
+    height: 6px;
+    background-color: #dc2626; /* Red-600 */
+    border-radius: 50%;
+    position: absolute;
+    bottom: 0px; /* Position the dot at the bottom */
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .tab-button:not(.active):hover {
+    color: #dc2626; /* Red-600 */
+    /* Removed border-bottom for hover state */
+  }
+
+  .product-grid {
+    display: grid;
+    grid-template-columns: repeat(2,1fr); /* Responsive columns */
+    gap: 12px; /* 32px */
+  }
+
+  /* Force 2 columns on larger screens, adjust as needed */
+  @media (min-width: 768px) { /* md breakpoint in Tailwind */
+    .product-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+      nav.tab-navigation{
+  justify-content:center !important;
+  }
+  }
+
+  .product-card {
+    position: relative;
+    overflow: hidden;
+    /* Removed transition and transform for fancy animation */
+  }
+
+  .product-card-image-wrapper {
+    position: relative;
+    width: 100%;
+    padding-top: 133.33%; /* For a 3:4 aspect ratio (400/300) */
+    overflow: hidden;
+  }
+
+  .product-card-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .product-tag {
+    position: absolute;
+    top: 0.5rem; /* 8px */
+    left: 0.5rem; /* 8px */
+    background-color: #2563eb; /* Blue-600 */
+    color: #ffffff;
+    font-size: 0.75rem; /* 12px */
+    font-weight: 600; /* Semi-bold */
+    padding: 0.25rem 0.5rem; /* 4px 8px */
+    border-radius: 9999px; /* Full rounded */
+    z-index: 10;
+  }
+
+  /* Removed .heart-icon styles as the element is removed */
+
+  .product-info {
+    padding-block: 1rem;
+  }
+
+  /* Removed .product-rating styles as the element is removed */
+
+  .product-title { /* Renamed from .product-brand for clarity */
+    font-size: 1rem; /* 20px - Made bigger */
+    font-weight: 400; /* Semi-bold */
+    margin-bottom: 0.5rem; /* 4px */
+  }
+
+  .product-name-description { /* Added for the product name/description */
+    color: #4b5563; /* Gray-600 */
+    font-size: 0.875rem; /* 14px */
+    margin-bottom: 0.5rem; /* 8px */
+  }
+
+  .product-prices {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.5rem; /* 8px */
+  }
+
+  .discounted-price {
+    font-size: 15px; /* 18px */
+    font-weight: 700; /* Bold */
+    color: #1f2937; /* Gray-900 */
+  }
+
+  .original-price {
+    font-size: 11px; /* 14px */
+    color: #6b7280; /* Gray-500 */
+    text-decoration: line-through;
+  }
+
+  .discount-percentage {
+    font-size: 11px;
+    font-weight: 400;
+    color: #fff;
+    background: #FF4C00;
+    padding-inline: 4px;
+  }
+
+  .no-products-message {
+    text-align: center;
+    color: #4b5563; /* Gray-600 */
+    font-size: 1.125rem; /* 18px */
+    margin-top: 2rem; /* 32px */
+  }
+
+  .tab-content {
+    display: none; /* Hidden by default */
+  }
+
+  .tab-content.active {
+    display: block; /* Show active tab content */
+  }
+</style>
+
+<div class="new-arrival-section">
+  <h2 class="section-title">{{ section.settings.section_title | default: 'NEW ARRIVAL' }}</h2>
+
+  <nav class="tab-navigation">
+    {% for block in section.blocks %}
+      <button
+        class="tab-button {% if forloop.first %}active{% endif %}"
+        data-tab-id="tab-{{ block.id }}"
+        aria-controls="tab-content-{{ block.id }}"
+        aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
+        role="tab"
+      >
+        {{ block.settings.tab_title }}
+      </button>
+    {% endfor %}
+  </nav>
+
+  {% for block in section.blocks %}
+    <div
+      id="tab-content-{{ block.id }}"
+      class="tab-content {% if forloop.first %}active{% endif %}"
+      role="tabpanel"
+      aria-labelledby="tab-{{ block.id }}"
+    >
+      {% if block.type == 'collection_block' %}
+        {% assign collection = block.settings.collection %}
+        {% if collection.products.size > 0 %}
+          <div class="product-grid">
+            {% for product in collection.products limit: 6 %}
+              <a href="{{ product.url }}" class="product-card">
+                <div class="product-card-image-wrapper">
+                  {% if product.featured_image %}
+                    <img
+                      src="{{ product.featured_image | img_url: '400x' }}"
+                      alt="{{ product.featured_image.alt | escape }}"
+                      class="product-card-image"
+                      loading="lazy"
+                    >
+                  {% else %}
+                    <img
+                      src="https://placehold.co/300x400/CCCCCC/333333?text=No+Image"
+                      alt="Placeholder image"
+                      class="product-card-image"
+                    >
+                  {% endif %}
+                  {% if product.metafields.custom.tag %}
+                    <span class="product-tag">{{ product.metafields.custom.tag }}</span>
+                  {% endif %}
+                </div>
+                <div class="product-info">
+                  <h3 class="product-title">{{ product.title }}</h3> 
+                  <div class="product-prices">
+                    {% if product.compare_at_price > product.price %}
+                      <span class="original-price">₹{{ product.compare_at_price | money_without_currency }}</span>
+                                          <span class="discounted-price">₹{{ product.price | money_without_currency }}</span>
+                      {% assign discount_percentage = product.compare_at_price | minus: product.price | times: 100 | divided_by: product.compare_at_price %}
+                      <span class="discount-percentage">{{ discount_percentage | round }}% OFF</span>
+                    {% endif %}
+                  </div>
+                </div>
+              </a>
+            {% endfor %}
+          </div>
+        {% else %}
+          <p class="no-products-message">No products found in the '{{ collection.title }}' collection.</p>
+        {% endif %}
+      {% elsif block.type == 'text_block' %}
+        <p class="no-products-message">{{ block.settings.tab_content | default: 'Content for this tab will appear here.' }}</p>
+      {% endif %}
+    </div>
+  {% endfor %}
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const tabButtons = document.querySelectorAll('.tab-button');
+    const tabContents = document.querySelectorAll('.tab-content');
+
+    tabButtons.forEach(button => {
+      button.addEventListener('click', function() {
+        // Remove active class from all buttons and contents
+        tabButtons.forEach(btn => {
+          btn.classList.remove('active');
+          btn.setAttribute('aria-selected', 'false');
+        });
+        tabContents.forEach(content => {
+          content.classList.remove('active');
+        });
+
+        // Add active class to clicked button and corresponding content
+        const tabId = this.dataset.tabId;
+        const targetContent = document.getElementById(`tab-content-${tabId.split('-')[1]}`); // Extract block ID
+        
+        this.classList.add('active');
+        this.setAttribute('aria-selected', 'true');
+        if (targetContent) {
+          targetContent.classList.add('active');
+        }
+      });
+    });
+  });
+</script>
+
+{% schema %}
+{
+  "name": "New Arrival Tabs",
+  "settings": [
+    {
+      "type": "text",
+      "id": "section_title",
+      "label": "Section Title",
+      "default": "NEW ARRIVAL"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "collection_block",
+      "name": "Collection Tab",
+      "settings": [
+        {
+          "type": "text",
+          "id": "tab_title",
+          "label": "Tab Title",
+          "default": "All"
+        },
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Select Collection"
+        }
+      ]
+    },
+    {
+      "type": "text_block",
+      "name": "Text Tab",
+      "settings": [
+        {
+          "type": "text",
+          "id": "tab_title",
+          "label": "Tab Title",
+          "default": "Apparel"
+        },
+        {
+          "type": "richtext",
+          "id": "tab_content",
+          "label": "Tab Content",
+          "default": "<p>Add descriptive text for this tab here.</p>"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "New Arrival Tabs",
+      "blocks": [
+        {
+          "type": "collection_block",
+          "settings": {
+            "tab_title": "All"
+          }
+        },
+        {
+          "type": "collection_block",
+          "settings": {
+            "tab_title": "Apparel"
+          }
+        },
+        {
+          "type": "collection_block",
+          "settings": {
+            "tab_title": "Dress"
+          }
+        },
+        {
+          "type": "collection_block",
+          "settings": {
+            "tab_title": "Tshirt"
+          }
+        },
+        {
+          "type": "collection_block",
+          "settings": {
+            "tab_title": "Bag"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

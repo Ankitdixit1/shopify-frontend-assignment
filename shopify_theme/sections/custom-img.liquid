@@ -1,0 +1,67 @@
+{% schema %}
+{
+    "name": "Custom Img",
+    "settings": [
+        {
+            "type": "image_picker",
+            "id": "custom_image",
+            "label": "Custom Image dekstop"
+        },
+        {
+            "type": "image_picker",
+            "id": "custom_image_mobile",
+            "label": "Custom Image mobile"
+        },
+        {
+            "type": "url",
+            "id": "custom_image_link",
+            "label": "Custom Image Link"
+        }
+    ],
+    "presets": [
+        {
+            "name": "Custom Img",
+            "category": "Custom"
+        }
+    ]
+}
+{% endschema %}
+
+<div class="card__media-ank margin-top-28">
+    <a href="{{ section.settings.custom_image_link }}" target="_blank" rel="noopener noreferrer" style="display: flex;">
+        {% if section.settings.custom_image != blank %}
+                  <img
+            src="{{ section.settings.custom_image | img_url: 'master' }}"
+            alt="Custom Image"
+            loading="lazy"
+            class="card__media-ank--desktop"
+        >
+        {% endif %}
+        {% if section.settings.custom_image_mobile != blank %}
+                      <img
+            src="{{ section.settings.custom_image_mobile | img_url: 'master' }}"
+            alt="Custom Image"
+            loading="lazy"
+            class="card__media-ank--mobile"
+        >
+        {% endif %}
+
+    </a>
+</div>
+<style>
+    @media (min-width: 749px) {
+        .card__media-ank--desktop {
+            display: block !important;
+        }
+        .card__media-ank--mobile {
+            display: none !important;
+        }
+    }
+    .card__media-ank--desktop {
+            display: none;
+        }
+    .card__media-ank img {
+        width: 100%;
+        height: auto;
+    }
+</style>

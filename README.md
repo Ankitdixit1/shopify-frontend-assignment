@@ -1,55 +1,50 @@
-# Shopify Order Help Extension
+# Shopify Store Setup: Theme and Extensions
 
-This repository contains a Shopify Customer Account UI Extension that adds a "Need help with this order?" feature to the Order Status page.
+This repository contains the code for the Shopify store, including the customized theme and the "Order Help" Customer Account UI Extension.
 
-## Features
+## folder Structure
 
-- **Help Button**: A clearly visible button on the Order Status page.
-- **Support Modal**: text explaining how to contact support.
-- **Dynamic Content**: Displays the current Order Name/ID dynamically.
-- **Email Integration**: specific "Email Support" button that opens the user's default email client with a pre-filled subject line including the order number.
+- **`customer_ui_extension/`**: Contains the source code for the Customer Account UI Extension.
+  - Adds a "Need help with this order?" button to the Order Status page.
+  - Includes `src/`, `locales/`, and configuration files.
+- **`shopify_theme/`**: Contains the Liquid theme files and assets downloaded from the store (`horizon-ank`).
 
-## Setup Instructions
+## Customer UI Extension
 
-1. **Install Dependencies**:
+### Features
 
+- **Help Button**: Displays on the Order Status page.
+- **Support Modal**: informational modal with a "Contact Support" mailto link.
+- **Dynamic Data**: Fetches and displays the current Order Name.
+
+### Setup & Development
+
+1. Navigate to the directory:
+   ```bash
+   cd customer_ui_extension
+   ```
+2. Install dependencies:
    ```bash
    npm install
    ```
-
-2. **Start Development Server**:
-
+3. Run the development server:
    ```bash
    npm run dev
    ```
 
-3. **Preview**:
-   - Open the URL provided in the terminal (usually your Partner Dashboard preview link).
-   - Navigate to an **Order Status** page simulation to see the extension in action.
+## Shopify Theme
 
-## Project Structure
+The `shopify_theme` directory contains the theme's Liquid templates, JSON config, and assets.
 
-- `extensions/customer-account-ui/`: Contains the extension logic and configuration.
-  - `src/OrderStatusBlock.jsx`: Main React/Preact component for the UI extension.
-  - `shopify.extension.toml`: Extension configuration.
+- **Modifications**: Check `layout/`, `templates/`, and `sections/` for any custom code.
+- **Deployment**:
+  ```bash
+  cd shopify_theme
+  shopify theme push
+  ```
 
-## API Usage
+## Submission Details
 
-This extension uses the Shopify UI Extensions API for Customer Account (`@shopify/ui-extensions/customer-account`).
-
-- **Target**: `customer-account.order-status.block.render`
-- **Components Used**:
-  - `BlockStack`: For vertical layout.
-  - `Banner`: For displaying the help prompt and status messages.
-  - `Button`: For interactive elements (opening modal, sending email).
-- **APIs**:
-  - `useApi()` (via props): To access the `order` object for retrieving dynamic order details (`order.name` or `order.id`).
-
-## Known Limitations / TODOs
-
-- **Hardcoded Email**: The support email is currently hardcoded (`support@example.com`). This should be made configurable in the future.
-- **Styling**: Uses standard Shopify UI components (`Banner`, `Button`) for consistency, custom CSS is minimal/inline via component props.
-
-## Theme Changes
-
-This is an "Extension-only" app. No direct modification of the Shopify Theme Liquid files is required as it injects into the predefined extension targets.
+- **Theme Changes**: Included in `shopify_theme/`.
+- **Extension Code**: Included in `customer_ui_extension/`.
+- **Proof of Functionality**: (Please refer to attached screenshots/video if applicable).
