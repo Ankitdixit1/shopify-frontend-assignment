@@ -96,3 +96,23 @@ _The modal that opens on click, showing support options._
 - The Storefront API token in the Theme Section is client-side implementation for demonstration; for production, ensure scope permissions are limited or use a proxy.
 
 ---
+
+## 🤖 AI Prompts Used
+
+Here are the specific prompts you can use with an AI coding assistant (like ChatGPT, Claude, or Gemini) to regenerate this project's features. These are written in natural language to get the best results.
+
+### 1. For the Liquid Section (Product Page)
+
+> "Hey, I need a custom section for my product page called 'Product Key Info'. It should show the product title and price, but the main thing is a 'Size Guide' button. I want that button to open a nice sliding drawer with size details. Can you make it so I can edit the button text in the Theme Editor? Also make sure it closes if I hit ESC."
+
+### 2. For the Storefront API Integration (Size Guide Drawer)
+
+> "For the 'Size Guide' drawer, I have already created metaobject for size quide use Storefront API to fetch a `metaobject` of type `size_guide`? utilize the GraphQL API latest version. I need it to get the `title` and `body` fields. Make sure to handle loading states and what happens if the API fails or returns nothing. Also, please include the actual GraphQL query in the code so I can see it and shows that fetch data in drawer"
+
+### 3. For the UI Extension (Order Status)
+
+> "I want to add a help block to the Customer Order Status page. It should just say 'Need help with this order?' with a button. If they click it, open a popup that says 'Contact Support' and links to our email. Important: Can you make sure the email link automatically fills in the subject line with the current Order Name (like Order #105)? I need the full code setup for this."
+
+### Note:
+
+> " AI never gives exact code what we are looking for so its a process of debuging and testing to get the exact code we need"
