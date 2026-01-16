@@ -1,0 +1,195 @@
+<div class="product-key-info page-width">
+  <h1>{{ product.title }}</h1>
+  <div class="product-price">
+    {{ product.price | money }}
+  </div>
+
+  {% unless product.has_only_default_variant %}
+    <variant-selects class="no-js-hidden" data-section="{{ section.id }}" data-url="{{ product.url }}">
+      {% for option in product.options_with_values %}
+        <label>{{ option.name }}</label>
+        <select>
+          {% for value in option.values %}
+            <option value="{{ value | escape }}">{{ value }}</option>
+          {% endfor %}
+        </select>
+      {% endfor %}
+    </variant-selects>
+  {% endunless %}
+
+  <button
+    id="size-guide-trigger"
+    class="button"
+    aria-expanded="false"
+    aria-controls="size-guide-drawer"
+  >
+    {{ section.settings.button_label }}
+  </button>
+</div>
+
+<div
+  id="size-guide-drawer"
+  class="drawer-overlay hidden"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="drawer-title"
+>
+  <div class="drawer-content">
+    <header class="drawer-header">
+      <h2 id="drawer-title">Size Guide</h2>
+      <button id="drawer-close" class="close-btn" aria-label="Close size guide">X</button>
+    </header>
+
+    <div id="drawer-body-content">
+      <p>Loading...</p>
+    </div>
+  </div>
+</div>
+
+<style>
+  /* Basic styling for the drawer sliding effect */
+  .drawer-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    display: flex;
+    justify-content: flex-end;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease;
+  }
+  .drawer-overlay.open {
+    opacity: 1;
+    visibility: visible;
+  }
+  .drawer-content {
+    background: white;
+    width: 400px;
+    max-width: 100%;
+    height: 100%;
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+    padding: 20px;
+  }
+  .drawer-overlay.open .drawer-content {
+    transform: translateX(0);
+  }
+  .hidden {
+    display: none;
+  } /* Fallback */
+</style>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const trigger = document.getElementById('size-guide-trigger');
+    const drawer = document.getElementById('size-guide-drawer');
+    const closeBtn = document.getElementById('drawer-close');
+    const contentContainer = document.getElementById('drawer-body-content');
+
+    // Storefront API Configuration
+    const SHOPIFY_STORE_DOMAIN = 'salman-store-setup.myshopify.com';
+    const STOREFRONT_ACCESS_TOKEN = 'af3a9fcce1d53d22dea2d236d6778888';
+
+    // Task B: Accessibility & Interaction
+    function openDrawer() {
+      drawer.classList.remove('hidden');
+      // Small timeout to allow display:block to apply before opacity transition
+      setTimeout(() => drawer.classList.add('open'), 10);
+      trigger.setAttribute('aria-expanded', 'true');
+      closeBtn.focus(); // Task B: Focus moves into panel
+      fetchSizeGuide(); // Trigger API call on open
+    }
+
+    function closeDrawer() {
+      drawer.classList.remove('open');
+      setTimeout(() => drawer.classList.add('hidden'), 300);
+      trigger.setAttribute('aria-expanded', 'false');
+      trigger.focus();
+    }
+
+    trigger.addEventListener('click', openDrawer);
+    closeBtn.addEventListener('click', closeDrawer);
+
+    // Task B: ESC Key to close
+    drawer.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeDrawer();
+    });
+
+    // Task C: Fetch Metaobjects via Storefront API
+    async function fetchSizeGuide() {
+      // Avoid re-fetching if already loaded
+      if (contentContainer.dataset.loaded === 'true') return;
+
+      const query = `
+        {
+          metaobjects(type: "size_guide", first: 1) {
+            edges {
+              node {
+                fields {
+                  key
+                  value
+                }
+              }
+            }
+          }
+        }
+      `;
+
+      try {
+        const response = await fetch(`https://${SHOPIFY_STORE_DOMAIN}/api/2026-01/graphql.json`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Shopify-Storefront-Access-Token': STOREFRONT_ACCESS_TOKEN,
+          },
+          body: JSON.stringify({ query }),
+        });
+
+        const { data } = await response.json();
+
+        // Handle Empty States
+        if (!data.metaobjects.edges.length) {
+          contentContainer.innerHTML = '<p>No size guide found.</p>';
+          return;
+        }
+
+        // Parse fields
+        const fields = data.metaobjects.edges[0].node.fields;
+        console.log(fields);
+        const bodyField = fields.find((f) => f.key === 'body');
+        const titleField = fields.find((f) => f.key === 'title');
+
+        // Render
+        const titleHtml = titleField ? `<h3>${titleField.value}</h3>` : '<h3>Size Guide</h3>';
+        const bodyHtml = bodyField ? `<div>${bodyField.value}</div>` : '<p>Size details unavailable.</p>';
+        contentContainer.innerHTML = titleHtml + bodyHtml;
+        contentContainer.dataset.loaded = 'true';
+      } catch (error) {
+        console.error('API Error:', error);
+        contentContainer.innerHTML = '<p>Error loading size guide.</p>'; // Graceful error handling
+      }
+    }
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Product Key Info",
+  "settings": [
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button Label",
+      "default": "Size Guide"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product Key Info + Size Guide"
+    }
+  ]
+}
+{% endschema %}
